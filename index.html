@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrapTime">
+      <input id="picked-calendar" type="button">
+      <img id="close" src="close.png" alt="">
+
+      <div class="wrapper" style="display: none">
+        <div class="container-calendar">
+          <h3 id="monthAndYear"></h3>
+
+          <div class="button-container-calendar">
+            <button id="previous">&#8249;</button>
+            <button id="next">&#8250;</button>
+          </div>
+
+          <table class="table-calendar" id="calendar">
+            <thead id="thead-month"></thead>
+            <tbody id="calendar-body"></tbody>
+          </table>
+          <div id="month"></div>
+          <div id="year"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p id="addTime">+ Add an additional day</p>
+
+
+  <script src="index.js"></script>
+  <script>
+
+
+    const addButton = document.getElementById("addTime");
+    addButton.addEventListener("click", function () {
+
+      const container = document.getElementById("container");
+      const clone = container.firstElementChild.cloneNode(true);
+      clone.className = "calendarClone";
+
+
+
+   
+      container.appendChild(clone);
+
+      //  CHANGE INPUT CLONE
+
+      const calendarClones = document.querySelectorAll('.calendarClone');
+      // console.log(closeClones);
+      const todayClone = new Date();
+      // let currentDay = today.getUTCDay();
+
+      let currentMonthClone = todayClone.getMonth();
+      let currentYearClone = todayClone.getFullYear();
+      // const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      // const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      // calendarClones.forEach(calendarClone => calendarClone.firstElementChild.value = `${days[currentDay]}, ${today.getDate()} ${months[currentMonth]} ${currentYearClone}`);
+      //  console.log(x.firstElementChild.value);
+      // END CHANGE INPUT CLONE
+      // showCalendar(currentMonthClone, currentYearClone);
+      // showAndHideCalendar();
+      // Clear();
+
+      showCalendarClone(currentMonthClone, currentYearClone);
+
+      handleDisabled();
+      showDateInput();
+      showAndHideCalendar();
+      Clear();
+
+      //---next
+      const btnNext = document.querySelectorAll('#next');
+      btnNext.forEach(x => x.addEventListener('click', function (e) {
+        if (x != btnNext[0]) {
+          // console.log('next 1');
+          // console.log('bbb');
+          //----test showCalendar2
+          // console.log(e.currentTarget.parentNode.parentNode.childNodes[1].innerText);
+          const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
+          const arr = monthAndYear.split(' ');
+          const a = months.findIndex(x => x == arr[0]);
+          currentMonth = a;
+
+          currentYear = Number(arr[1]);
+          // console.log(a);
+          // console.log(arr);
+          currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+          currentMonth = (currentMonth + 1) % 12;
+
+          const month = currentMonth;
+          const year = currentYear;
+
+          const firstDay = (new Date(year, month)).getDay();
+          const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
+
+          calendarBody.innerHTML = "";
+
+          const aa = e.currentTarget.parentNode.parentNode.childNodes[1];
+          aa.innerHTML = months[month] + " " + year;
+          selectYear.value = year;
+          selectMonth.value = month;
+          let date = 1;
+          for (let i = 0; i < 6; i++) {
+            const row = document.createElement("tr");
+            for (let j = 0; j < 7; j++) {
+              if (i === 0 && j < firstDay) {
+                cell = document.createElement("td");
+                cellText = document.createTextNode("");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+              } else if (date > daysInMonth(month, year)) {
+                break;
+              } else {
+                cell = document.createElement("td");
+                cell.setAttribute("data-date", date);
+                cell.setAttribute("data-month", month + 1);
+                cell.setAttribute("data-year", year);
+                cell.setAttribute("data-month_name", months[month]);
+                cell.className = "date-picker";
+                cell.innerHTML = "<span>" + date + "</span>";
+
+                if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+                  cell.className = "date-picker selected";
+                }
+                row.appendChild(cell);
+                date++;
+              }
+            }
+            calendarBody.appendChild(row);
+          }
+        }
+        //end test
+
+        handleDisabled();
+        showDateInput();
+        showAndHideCalendar();
+        Clear();
+      }))
+      //---end next
+
+
+      //---prev
+      const btnPrev = document.querySelectorAll('#previous');
+      btnPrev.forEach(x => x.addEventListener('click', function (e) {
+        if (x != btnPrev[0]) {
+          // console.log('prev 1');
+          // console.log('bbb');
+          //----test showCalendar2
+          // console.log(e.currentTarget.parentNode.parentNode.childNodes[1].innerText);
+          const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
+          const arr = monthAndYear.split(' ');
+          const a = months.findIndex(x => x == arr[0]);
+          currentMonth = a;
+
+          currentYear = Number(arr[1]);
+          // console.log(a);
+          // console.log(arr);
+          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+          // currentMonth = (currentMonth + 1) % 12;
+          // currentYear = arr[1];
+          currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+          currentMonth = (currentMonth === 0) ? 12 : currentMonth;
+          currentMonth = (currentMonth - 1) % 12;
+
+
+          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+          // currentMonth = (currentMonth + 1) % 12;
+          // currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+          // currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+          // currentMonth = (currentMonth + 1) % 12;
+
+          const month = currentMonth;
+          const year = currentYear;
+
+          const firstDay = (new Date(year, month)).getDay();
+          const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
+
+          calendarBody.innerHTML = "";
+
+          const aa = e.currentTarget.parentNode.parentNode.childNodes[1];
+          aa.innerHTML = months[month] + " " + year;
+          selectYear.value = year;
+          selectMonth.value = month;
+          let date = 1;
+          for (let i = 0; i < 6; i++) {
+            const row = document.createElement("tr");
+            for (let j = 0; j < 7; j++) {
+              if (i === 0 && j < firstDay) {
+                cell = document.createElement("td");
+                cellText = document.createTextNode("");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+              } else if (date > daysInMonth(month, year)) {
+                break;
+              } else {
+                cell = document.createElement("td");
+                cell.setAttribute("data-date", date);
+                cell.setAttribute("data-month", month + 1);
+                cell.setAttribute("data-year", year);
+                cell.setAttribute("data-month_name", months[month]);
+                cell.className = "date-picker";
+                cell.innerHTML = "<span>" + date + "</span>";
+
+                if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+                  cell.className = "date-picker selected";
+                }
+                row.appendChild(cell);
+                date++;
+              }
+            }
+            calendarBody.appendChild(row);
+          }
+        }
+        //end test
+
+        handleDisabled();
+        showDateInput();
+        showAndHideCalendar();
+        Clear();
+      }))
+      //---end prev
+
+
+    });
+
+
+  </script>
+
+</body>
+
+</html>

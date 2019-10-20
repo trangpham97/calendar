@@ -1,0 +1,133 @@
+html {
+  font-family: sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #444;
+}
+
+body {
+  margin: 0;
+  background: #504f4f;
+  font-size: 1em;
+}
+
+#wrapTime{
+  position: relative;
+}
+
+#close{
+  width: 50px;
+  left: 60%;
+  top: -9px;
+  width: 50px;
+  position: absolute;
+  cursor: pointer;
+  display: none;
+}
+
+.calendarClone #close{
+  display: block;
+}
+
+.wrapper {
+  margin: 15px auto;
+  max-width: 1100px;
+  /* display: none; */
+}
+
+.container-calendar {
+  background: #ffffff;
+  padding: 15px;
+  max-width: 475px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.button-container-calendar button {
+  cursor: pointer;
+  display: inline-block;
+  zoom: 1;
+  background: #00a2b7;
+  color: #fff;
+  border: 1px solid #0aa2b5;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+.table-calendar {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table-calendar td, .table-calendar th {
+  padding: 5px;
+  border: 1px solid #e2e2e2;
+  text-align: center;
+  vertical-align: top;
+}
+
+.date-picker.selected {
+  font-weight: bold;
+  outline: 1px dashed #00BCD4;
+}
+
+.date-picker.selected span {
+  border-bottom: 2px solid currentColor;
+}
+
+/* sunday */
+.date-picker:nth-child(1) {
+color: red;
+}
+
+/* friday */
+.date-picker:nth-child(6) {
+color: green;
+}
+
+#monthAndYear {
+  text-align: center;
+  margin-top: 0;
+}
+
+.button-container-calendar {
+  position: relative;
+  margin-bottom: 1em;
+  overflow: hidden;
+  clear: both;
+}
+
+#previous {
+  float: left;
+}
+
+#next {
+  float: right;
+}
+
+#calendar-body tr td{
+  cursor: pointer;
+}
+
+#calendar-body tr td:hover{
+  background: #3ccebb;
+}
+
+#calendar-body tr td[disabled] {
+   pointer-events: none; 
+}
+
+#picked-calendar{
+  border-radius: 12px;
+  padding: 10px;
+  width: 300px;
+  margin: 35px auto;
+  display: block;
+}
+
+#addTime{
+  font-size: 14px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
