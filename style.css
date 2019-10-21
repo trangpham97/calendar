@@ -25,7 +25,7 @@ body {
   display: none;
 }
 
-.calendarClone #close{
+.calendar-clone #close{
   display: block;
 }
 
@@ -85,7 +85,7 @@ color: red;
 color: green;
 }
 
-#monthAndYear {
+#month-and-year {
   text-align: center;
   margin-top: 0;
 }
@@ -125,7 +125,7 @@ color: green;
   display: block;
 }
 
-#addTime{
+#add-time{
   font-size: 14px;
   color: white;
   text-align: center;

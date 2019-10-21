@@ -17,7 +17,7 @@
 
       <div class="wrapper" style="display: none">
         <div class="container-calendar">
-          <h3 id="monthAndYear"></h3>
+          <h3 id="month-and-year"></h3>
 
           <div class="button-container-calendar">
             <button id="previous">&#8249;</button>
@@ -35,66 +35,41 @@
     </div>
   </div>
 
-  <p id="addTime">+ Add an additional day</p>
+  <p id="add-time">+ Add an additional day</p>
 
 
   <script src="index.js"></script>
   <script>
-
-
-    const addButton = document.getElementById("addTime");
+    const addButton = document.getElementById("add-time");
     addButton.addEventListener("click", function () {
-
       const container = document.getElementById("container");
       const clone = container.firstElementChild.cloneNode(true);
-      clone.className = "calendarClone";
-
-
-
-   
+      clone.className = "calendar-clone";
       container.appendChild(clone);
 
-      //  CHANGE INPUT CLONE
+      const calendarClones = document.querySelectorAll('.calendar-clone');
 
-      const calendarClones = document.querySelectorAll('.calendarClone');
-      // console.log(closeClones);
       const todayClone = new Date();
-      // let currentDay = today.getUTCDay();
 
       let currentMonthClone = todayClone.getMonth();
       let currentYearClone = todayClone.getFullYear();
-      // const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      // const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      // calendarClones.forEach(calendarClone => calendarClone.firstElementChild.value = `${days[currentDay]}, ${today.getDate()} ${months[currentMonth]} ${currentYearClone}`);
-      //  console.log(x.firstElementChild.value);
-      // END CHANGE INPUT CLONE
-      // showCalendar(currentMonthClone, currentYearClone);
-      // showAndHideCalendar();
-      // Clear();
 
       showCalendarClone(currentMonthClone, currentYearClone);
-
       handleDisabled();
       showDateInput();
       showAndHideCalendar();
       Clear();
 
-      //---next
+      //--- next button
       const btnNext = document.querySelectorAll('#next');
       btnNext.forEach(x => x.addEventListener('click', function (e) {
-        if (x != btnNext[0]) {
-          // console.log('next 1');
-          // console.log('bbb');
-          //----test showCalendar2
-          // console.log(e.currentTarget.parentNode.parentNode.childNodes[1].innerText);
+        if (x !== btnNext[0]) {
           const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
           const arr = monthAndYear.split(' ');
           const a = months.findIndex(x => x == arr[0]);
           currentMonth = a;
-
           currentYear = Number(arr[1]);
-          // console.log(a);
-          // console.log(arr);
+
           currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
           currentMonth = (currentMonth + 1) % 12;
 
@@ -140,46 +115,26 @@
             calendarBody.appendChild(row);
           }
         }
-        //end test
-
         handleDisabled();
         showDateInput();
         showAndHideCalendar();
         Clear();
       }))
-      //---end next
+      //---end next button
 
-
-      //---prev
+      //--- prev button
       const btnPrev = document.querySelectorAll('#previous');
       btnPrev.forEach(x => x.addEventListener('click', function (e) {
-        if (x != btnPrev[0]) {
-          // console.log('prev 1');
-          // console.log('bbb');
-          //----test showCalendar2
-          // console.log(e.currentTarget.parentNode.parentNode.childNodes[1].innerText);
+        if (x !== btnPrev[0]) {
           const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
           const arr = monthAndYear.split(' ');
           const a = months.findIndex(x => x == arr[0]);
           currentMonth = a;
 
           currentYear = Number(arr[1]);
-          // console.log(a);
-          // console.log(arr);
-          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-          // currentMonth = (currentMonth + 1) % 12;
-          // currentYear = arr[1];
           currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
           currentMonth = (currentMonth === 0) ? 12 : currentMonth;
           currentMonth = (currentMonth - 1) % 12;
-
-
-          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-          // currentMonth = (currentMonth + 1) % 12;
-          // currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-          // currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-          // currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-          // currentMonth = (currentMonth + 1) % 12;
 
           const month = currentMonth;
           const year = currentYear;
@@ -193,6 +148,7 @@
           aa.innerHTML = months[month] + " " + year;
           selectYear.value = year;
           selectMonth.value = month;
+          
           let date = 1;
           for (let i = 0; i < 6; i++) {
             const row = document.createElement("tr");
@@ -223,19 +179,13 @@
             calendarBody.appendChild(row);
           }
         }
-        //end test
-
         handleDisabled();
         showDateInput();
         showAndHideCalendar();
         Clear();
       }))
-      //---end prev
-
-
+      //--- end prev button
     });
-
-
   </script>
 
 </body>
