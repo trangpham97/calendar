@@ -1,4 +1,4 @@
-//facade, Observer, Adapter 
+//factory, composite, facade, Observer, Adapter, pubsub
 const today = new Date();
 let currentDay = today.getUTCDay();
 let currentMonth = today.getMonth();
@@ -20,15 +20,15 @@ document.getElementById("thead-month").innerHTML = dataHead;
 monthAndYear = document.getElementById("month-and-year");
 showCalendar(currentMonth, currentYear);
 
- 
+
 //--- next button
 const btnNext = document.querySelectorAll('#next');
-btnNext.forEach(x => x.addEventListener('click', function (e) {
-  if (x === btnNext[0]) {
+btnNext.forEach(item => item.addEventListener('click', function (e) {
+  if (item === btnNext[0]) {
     const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
     const arr = monthAndYear.split(' ');
-    const a = months.findIndex(x => x == arr[0]);
-    currentMonth = a;
+    const findMonth = months.findIndex(month => month == arr[0]);
+    currentMonth = findMonth;
     currentYear = Number(arr[1]);
     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
     currentMonth = (currentMonth + 1) % 12;
@@ -40,8 +40,8 @@ btnNext.forEach(x => x.addEventListener('click', function (e) {
     const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
     calendarBody.innerHTML = "";
 
-    const aa = e.currentTarget.parentNode.parentNode.childNodes[1];
-    aa.innerHTML = months[month] + " " + year;
+    const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
+    monthYear.innerHTML = months[month] + " " + year;
     selectYear.value = year;
     selectMonth.value = month;
 
@@ -83,13 +83,13 @@ btnNext.forEach(x => x.addEventListener('click', function (e) {
 
 //--- prev button
 const btnPrev = document.querySelectorAll('#previous');
-btnPrev.forEach(x => x.addEventListener('click', function (e) {
-  if (x === btnPrev[0]) {
+btnPrev.forEach(item => item.addEventListener('click', function (e) {
+  if (item === btnPrev[0]) {
     const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
     const arr = monthAndYear.split(' ');
-    const a = months.findIndex(x => x == arr[0]);
-    if (a !== 0) {
-      currentMonth = a + 1;
+    const findMonth = months.findIndex(month => month == arr[0]);
+    if (findMonth !== 0) {
+      currentMonth = findMonth + 1;
     }
     currentYear = Number(arr[1]);
     currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
@@ -103,8 +103,8 @@ btnPrev.forEach(x => x.addEventListener('click', function (e) {
     const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
     calendarBody.innerHTML = "";
 
-    const aa = e.currentTarget.parentNode.parentNode.childNodes[1];
-    aa.innerHTML = months[month] + " " + year;
+    const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
+    monthYear.innerHTML = months[month] + " " + year;
     selectYear.value = year;
     selectMonth.value = month;
 
@@ -307,9 +307,3 @@ function handleDisabled() {
   })
 }
 handleDisabled();
-
-
-
-
-
-
