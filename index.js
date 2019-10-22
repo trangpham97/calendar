@@ -1,4 +1,3 @@
-//factory, composite, facade, Observer, Adapter, pubsub
 const today = new Date();
 let currentDay = today.getUTCDay();
 let currentMonth = today.getMonth();

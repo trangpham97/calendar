@@ -37,8 +37,8 @@
 
   <p id="add-time">+ Add an additional day</p>
 
-
   <script src="index.js"></script>
+
   <script>
     const addButton = document.getElementById("add-time");
     addButton.addEventListener("click", function () {
@@ -85,6 +85,7 @@
           monthYear.innerHTML = months[month] + " " + year;
           selectYear.value = year;
           selectMonth.value = month;
+
           let date = 1;
           for (let i = 0; i < 6; i++) {
             const row = document.createElement("tr");
@@ -141,7 +142,6 @@
 
           const firstDay = (new Date(year, month)).getDay();
           const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
-
           calendarBody.innerHTML = "";
 
           const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
