@@ -19,11 +19,19 @@ document.getElementById("thead-month").innerHTML = dataHead;
 monthAndYear = document.getElementById("month-and-year");
 showCalendar(currentMonth, currentYear);
 
-const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
+const pipe = (...fns) => (x) => fns.reduce((y, f) => f(y), x);
+
 
 //Year section
 
-const calculateYear = id => initTime => id === 'previous' ?
+// const getConfigurationObject = () => id => {
+//   return id;
+// }
+
+const calculateYear = ({ gapNumber, comparisonIndex, initYear, initMonth }) =>
+  (initMonth === comparisonIndex) ? initYear + gapNumber : initYear;
+
+const curryCalculateYear = id => initTime => id === 'previous' ?
   calculateYear({
     gapNumber: -1,
     comparisonIndex: 0,
@@ -35,12 +43,9 @@ const calculateYear = id => initTime => id === 'previous' ?
     ...initTime
   });
 
-const calculateYear = ({ gapNumber, comparisonIndex, initYear, initMonth }) =>
-  (initMonth === comparisonIndex) ? initYear + gapNumber : initYear;
-
 //Month section
 
-const calcualteMonth = ({ id, initMonth }) = createdYear => ({
+const calculateMonth = ({ id, initMonth }) => createdYear => ({
   createdYear,
   createdMonth: id === 'previous' ? calculatePreviousMonth(initMonth) : calcuateMonthIndex(1)(initMonth)
 });
@@ -70,21 +75,21 @@ const calculateTime = ({ id, initYear, initMonth }) =>
   pipe(
     normalizeTimeData(id),
     calculateYear(id),
-    calcualteMonth({ id, initMonth })
+    calculateMonth({ id, initMonth })
   )({ initMonth, initYear })
 
-const calculateTime = ({ id, initYear, initMonth }) =>
-  pipe(
-    getConfigurationObject,
-    normalizeTimeData,
-    calculateYear,
-    calcualteMonth({ initMonth })
-  )({ id, initMonth, initYear })
+// const calculateTime = ({ id, initYear, initMonth }) =>
+//   pipe(
+//     getConfigurationObject,
+//     normalizeTimeData,
+//     curryCalculateYear,
+//     calculateMonth({ initMonth })
+//   )({ id, initMonth, initYear })
 
-  const trace = label => data => {
-    console.log(label, data);
-    return data;
-  }
+const trace = label => data => {
+  console.log(label, data);
+  return data;
+}
 
 
 //previous & next button
@@ -260,3 +265,19 @@ function handleDisabled() {
   })
 }
 handleDisabled();
+
+  // if (id === "previous") {
+      //   if (findMonth !== 0) {
+      //     currentMonth = findMonth + 1;
+      //   }
+      //   currentYear = Number(arr[1]);
+      //   currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+      //   currentMonth = (currentMonth === 0) ? 12 : currentMonth - 1;
+      //   currentMonth = (currentMonth - 1) % 12;
+      // }
+      // else {
+      //   currentMonth = findMonth;
+      //   currentYear = Number(arr[1]);
+      //   currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+      //   currentMonth = (currentMonth + 1) % 12;
+      // }
