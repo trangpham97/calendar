@@ -19,129 +19,109 @@ document.getElementById("thead-month").innerHTML = dataHead;
 monthAndYear = document.getElementById("month-and-year");
 showCalendar(currentMonth, currentYear);
 
+const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
 
-//--- next button
-const btnNext = document.querySelectorAll('#next');
-btnNext.forEach(item => item.addEventListener('click', function (e) {
-  if (item === btnNext[0]) {
-    const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
-    const arr = monthAndYear.split(' ');
-    const findMonth = months.findIndex(month => month == arr[0]);
-    currentMonth = findMonth;
-    currentYear = Number(arr[1]);
-    currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-    currentMonth = (currentMonth + 1) % 12;
+//Year section
 
-    const month = currentMonth;
-    const year = currentYear;
+const calculateYear = id => initTime => id === 'previous' ?
+  calculateYear({
+    gapNumber: -1,
+    comparisonIndex: 0,
+    ...initTime
+  })
+  : calculateYear({
+    gapNumber: 1,
+    comparisonIndex: 11,
+    ...initTime
+  });
 
-    const firstDay = (new Date(year, month)).getDay();
-    const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
-    calendarBody.innerHTML = "";
+const calculateYear = ({ gapNumber, comparisonIndex, initYear, initMonth }) =>
+  (initMonth === comparisonIndex) ? initYear + gapNumber : initYear;
 
-    const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
-    monthYear.innerHTML = months[month] + " " + year;
-    selectYear.value = year;
-    selectMonth.value = month;
+//Month section
 
-    let date = 1;
-    for (let i = 0; i < 6; i++) {
-      const row = document.createElement("tr");
-      for (let j = 0; j < 7; j++) {
-        if (i === 0 && j < firstDay) {
-          cell = document.createElement("td");
-          cellText = document.createTextNode("");
-          cell.appendChild(cellText);
-          row.appendChild(cell);
-        } else if (date > daysInMonth(month, year)) {
-          break;
-        } else {
-          cell = document.createElement("td");
-          cell.setAttribute("data-date", date);
-          cell.setAttribute("data-month", month + 1);
-          cell.setAttribute("data-year", year);
-          cell.setAttribute("data-month_name", months[month]);
-          cell.className = "date-picker";
-          cell.innerHTML = "<span>" + date + "</span>";
-          if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-            cell.className = "date-picker selected";
-          }
-          row.appendChild(cell);
-          date++;
-        }
-      }
-      calendarBody.appendChild(row);
-    }
+const calcualteMonth = ({ id, initMonth }) = createdYear => ({
+  createdYear,
+  createdMonth: id === 'previous' ? calculatePreviousMonth(initMonth) : calcuateMonthIndex(1)(initMonth)
+});
+
+const calculatePreviousMonth = initMonth =>
+  pipe(
+    getInitMonthIndex,
+    getFinalMonthIndex,
+    calcuateMonthIndex(-1)
+  )(initMonth);
+
+const getInitMonthIndex = initMonth => initMonth !== 0 ? initMonth + 1 : initMonth;
+const getFinalMonthIndex = initMonthIndex => (initMonthIndex === 0) ? 12 : initMonthIndex - 1;
+const calcuateMonthIndex = gapNumber => intMonth => (intMonth + gapNumber) % 12;
+
+const normalizeTimeData = id => ({ initMonth, initYear }) =>
+  id === 'previous' ? ({
+    initMonth: getInitMonthIndex(initMonth),
+    initYear
+  }) : ({
+    initMonth,
+    initYear
+  });
+
+
+const calculateTime = ({ id, initYear, initMonth }) =>
+  pipe(
+    normalizeTimeData(id),
+    calculateYear(id),
+    calcualteMonth({ id, initMonth })
+  )({ initMonth, initYear })
+
+const calculateTime = ({ id, initYear, initMonth }) =>
+  pipe(
+    getConfigurationObject,
+    normalizeTimeData,
+    calculateYear,
+    calcualteMonth({ initMonth })
+  )({ id, initMonth, initYear })
+
+  const trace = label => data => {
+    console.log(label, data);
+    return data;
   }
-  handleDisabled();
-  showDateInput();
-  showAndHideCalendar();
-  Clear();
-}))
-//---end next button
 
-//--- prev button
-const btnPrev = document.querySelectorAll('#previous');
-btnPrev.forEach(item => item.addEventListener('click', function (e) {
-  if (item === btnPrev[0]) {
-    const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
-    const arr = monthAndYear.split(' ');
-    const findMonth = months.findIndex(month => month == arr[0]);
-    if (findMonth !== 0) {
-      currentMonth = findMonth + 1;
+
+//previous & next button
+const btnFunc = (id) => {
+  const btn = document.querySelectorAll(`#${id}`);
+  btn.forEach(item => item.addEventListener('click', function (e) {
+    if (item === btn[0]) {
+      const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
+      const arr = monthAndYear.split(' ');
+      const findMonth = months.findIndex(month => month == arr[0]);
+
+      const { createdYear, createdMonth } = calculateTime({ id, initMonth: findMonth, initYear: Number(arr[1]) });
+
+      currentYear = createdYear;
+      currentMonth = createdMonth;
+
+      const month = currentMonth;
+      const year = currentYear;
+
+      const firstDay = (new Date(year, month)).getDay();
+      const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
+      calendarBody.innerHTML = "";
+
+      const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
+      monthYear.innerHTML = months[month] + " " + year;
+      selectYear.value = year;
+      selectMonth.value = month;
+      drawCalendar(firstDay, calendarBody, month, year);
     }
-    currentYear = Number(arr[1]);
-    currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-    currentMonth = (currentMonth === 0) ? 12 : currentMonth - 1;
-    currentMonth = (currentMonth - 1) % 12;
-
-    const month = currentMonth;
-    const year = currentYear;
-
-    const firstDay = (new Date(year, month)).getDay();
-    const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
-    calendarBody.innerHTML = "";
-
-    const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
-    monthYear.innerHTML = months[month] + " " + year;
-    selectYear.value = year;
-    selectMonth.value = month;
-
-    let date = 1;
-    for (let i = 0; i < 6; i++) {
-      const row = document.createElement("tr");
-      for (let j = 0; j < 7; j++) {
-        if (i === 0 && j < firstDay) {
-          cell = document.createElement("td");
-          cellText = document.createTextNode("");
-          cell.appendChild(cellText);
-          row.appendChild(cell);
-        } else if (date > daysInMonth(month, year)) {
-          break;
-        } else {
-          cell = document.createElement("td");
-          cell.setAttribute("data-date", date);
-          cell.setAttribute("data-month", month + 1);
-          cell.setAttribute("data-year", year);
-          cell.setAttribute("data-month_name", months[month]);
-          cell.className = "date-picker";
-          cell.innerHTML = "<span>" + date + "</span>";
-          if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-            cell.className = "date-picker selected";
-          }
-          row.appendChild(cell);
-          date++;
-        }
-      }
-      calendarBody.appendChild(row);
-    }
-  }
-  handleDisabled();
-  showDateInput();
-  showAndHideCalendar();
-  Clear();
-}))
-//---end prev button
+    handleDisabled();
+    showDateInput();
+    showAndHideCalendar();
+    Clear();
+  }))
+} //--end next & previous
+btnFunc("next");
+btnFunc("previous");
 
 function showCalendar(month, year) {
   const firstDay = (new Date(year, month)).getDay();
@@ -150,7 +130,10 @@ function showCalendar(month, year) {
   monthAndYear.innerHTML = months[month] + " " + year;
   selectYear.value = year;
   selectMonth.value = month;
+  drawCalendar(firstDay, calendarBody, month, year);
+}
 
+function drawCalendar(firstDay, calendarBody, month, year) {
   let date = 1;
   for (let i = 0; i < 6; i++) {
     const row = document.createElement("tr");
@@ -186,7 +169,7 @@ function showCalendarClone(month, year) {
   const firstDay = (new Date(year, month)).getDay();
   const calendarBodys = document.querySelectorAll("#calendar-body");
   calendarBodys.forEach((calendarBody) => {
-    if (calendarBody == calendarBodys[calendarBodys.length - 1]) {
+    if (calendarBody === calendarBodys[calendarBodys.length - 1]) {
       const pickedCalendarClone = calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[1];
       pickedCalendarClone.value = "";
       const wrapperClone = calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[5];
@@ -195,36 +178,7 @@ function showCalendarClone(month, year) {
       calendarBody.parentNode.parentNode.childNodes[1].innerHTML = months[month] + " " + year;
       selectYear.value = year;
       selectMonth.value = month;
-
-      let date = 1;
-      for (let i = 0; i < 6; i++) {
-        const row = document.createElement("tr");
-        for (let j = 0; j < 7; j++) {
-          if (i === 0 && j < firstDay) {
-            cell = document.createElement("td");
-            cellText = document.createTextNode("");
-            cell.appendChild(cellText);
-            row.appendChild(cell);
-          } else if (date > daysInMonth(month, year)) {
-            break;
-          } else {
-            cell = document.createElement("td");
-            cell.setAttribute("data-date", date);
-            cell.setAttribute("data-month", month + 1);
-            cell.setAttribute("data-year", year);
-            cell.setAttribute("data-month_name", months[month]);
-            cell.className = "date-picker";
-            cell.innerHTML = "<span>" + date + "</span>";
-
-            if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-              cell.className = "date-picker selected";
-            }
-            row.appendChild(cell);
-            date++;
-          }
-        }
-        calendarBody.appendChild(row);
-      }
+      drawCalendar(firstDay, calendarBody, month, year);
     }
   });
 }
