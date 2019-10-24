@@ -19,7 +19,7 @@ document.getElementById("thead-month").innerHTML = dataHead;
 monthAndYear = document.getElementById("month-and-year");
 showCalendar(currentMonth, currentYear);
 
-const pipe = (...fns) => (x) => fns.reduce((y, f) => f(y), x);
+const pipe = (...fns) => (x) => (fns.reduce((y, f) => f(y), x));
 
 
 //Year section
@@ -74,7 +74,7 @@ const normalizeTimeData = id => ({ initMonth, initYear }) =>
 const calculateTime = ({ id, initYear, initMonth }) =>
   pipe(
     normalizeTimeData(id),
-    calculateYear(id),
+    curryCalculateYear(id),
     calculateMonth({ id, initMonth })
   )({ initMonth, initYear })
 
