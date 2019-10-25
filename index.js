@@ -4,7 +4,8 @@ let currentYear = today.getFullYear();
 const selectYear = document.getElementById("year");
 const selectMonth = document.getElementById("month");
 
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const months = ["January", "February", "March", "April", "May", "June", "July",
+"August", "September", "October", "November", "December"];
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 let dataHead = "<tr>";
@@ -26,6 +27,7 @@ const showCalendar = (month, year) => {
   drawCalendar(firstDay, calendarBody, month, year);
 }
 
+
 const drawCalendar = (firstDay, calendarBody, month, year) => {
   let date = 1;
   for (let i = 0; i < 6; i++) {
@@ -46,7 +48,8 @@ const drawCalendar = (firstDay, calendarBody, month, year) => {
         cell.setAttribute("data-month_name", months[month]);
         cell.className = "date-picker";
         cell.innerHTML = "<span>" + date + "</span>";
-        if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+        if (date === today.getDate() && year === today.getFullYear() && 
+        month === today.getMonth()) {
           cell.className = "date-picker selected";
         }
         row.appendChild(cell);
@@ -56,6 +59,7 @@ const drawCalendar = (firstDay, calendarBody, month, year) => {
     calendarBody.appendChild(row);
   }
 }
+
 showCalendar(currentMonth, currentYear);
 
 
@@ -79,7 +83,8 @@ const curryCalculateYear = id => initTime => id === 'previous' ?
 
 const calculateMonth = ({ id, initMonth }) => createdYear => ({
   createdYear,
-  createdMonth: id === 'previous' ? calculatePreviousMonth(initMonth) : calcuateMonthIndex(1)(initMonth)
+  createdMonth: id === 'previous' ? calculatePreviousMonth(initMonth) 
+  : calcuateMonthIndex(1)(initMonth)
 });
 
 const calculatePreviousMonth = initMonth =>
@@ -89,8 +94,10 @@ const calculatePreviousMonth = initMonth =>
     calcuateMonthIndex(-1)
   )(initMonth);
 
-const getInitMonthIndex = initMonth => initMonth !== 0 ? initMonth + 1 : initMonth;
-const getFinalMonthIndex = initMonthIndex => (initMonthIndex === 0) ? 12 : initMonthIndex - 1;
+const getInitMonthIndex = initMonth => initMonth !== 0 ? initMonth + 1 
+: initMonth;
+const getFinalMonthIndex = initMonthIndex => (initMonthIndex === 0) ? 12 
+: initMonthIndex - 1;
 const calcuateMonthIndex = gapNumber => intMonth => (intMonth + gapNumber) % 12;
 
 const normalizeTimeData = ({ id, initMonth, initYear }) =>
@@ -101,7 +108,6 @@ const normalizeTimeData = ({ id, initMonth, initYear }) =>
     initMonth,
     initYear
   });
-
 
 const calculateTime = ({ id, initYear, initMonth }) =>
   pipe(
@@ -121,7 +127,7 @@ const handleAll = () =>
     handleDisabled,
     showDateInput,
     showAndHideCalendar,
-    Clear
+    clear
   )()
 
 //previous & next button
@@ -129,21 +135,20 @@ const btnFunc = (id) => {
   const btn = document.querySelectorAll(`#${id}`);
   btn.forEach(item => item.addEventListener('click', function (e) {
     if (item === btn[0]) {
-      const monthAndYear = e.currentTarget.parentNode.parentNode.childNodes[1].innerText;
+      const monthAndYear = e.currentTarget.parentNode.parentNode
+      .childNodes[1].innerText;
       const arr = monthAndYear.split(' ');
       const findMonth = months.findIndex(month => month == arr[0]);
-
-      const { createdYear, createdMonth } = calculateTime({ id, initMonth: findMonth, initYear: Number(arr[1]) });
+      const { createdYear, createdMonth } = 
+      calculateTime({ id, initMonth: findMonth, initYear: Number(arr[1]) });
       currentYear = createdYear;
       currentMonth = createdMonth;
-
       const firstDay = (new Date(currentYear, currentMonth)).getDay();
-      const calendarBody = e.currentTarget.parentNode.parentNode.childNodes[5].childNodes[3];
+      const calendarBody = e.currentTarget.parentNode.parentNode
+      .childNodes[5].childNodes[3];
       calendarBody.innerHTML = "";
-
-      const monthYear = e.currentTarget.parentNode.parentNode.childNodes[1];
-      monthYear.innerHTML = months[currentMonth] + " " + currentYear;
-
+      e.currentTarget.parentNode.parentNode.childNodes[1].innerHTML = 
+      months[currentMonth] + " " + currentYear;    
       selectYear.value = createdYear;
       selectMonth.value = createdMonth;
       drawCalendar(firstDay, calendarBody, currentMonth, currentYear);
@@ -154,17 +159,22 @@ const btnFunc = (id) => {
 btnFunc("next");
 btnFunc("previous");
 
+const hidePickDate = ({ calendarBody, month, year }) => {
+  calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[1]
+  .value = "";
+  calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[5]
+  .style.display = "none"
+  calendarBody.innerHTML = "";
+  calendarBody.parentNode.parentNode.childNodes[1].innerHTML = 
+  months[month] + " " + year;
+}
+
 const showCalendarClone = (month, year) => {
   const firstDay = (new Date(year, month)).getDay();
   const calendarBodys = document.querySelectorAll("#calendar-body");
   calendarBodys.forEach((calendarBody) => {
     if (calendarBody === calendarBodys[calendarBodys.length - 1]) {
-      const pickedCalendarClone = calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[1];
-      pickedCalendarClone.value = "";
-      const wrapperClone = calendarBody.parentNode.parentNode.parentNode.parentNode.childNodes[5];
-      wrapperClone.style.display = "none";
-      calendarBody.innerHTML = "";
-      calendarBody.parentNode.parentNode.childNodes[1].innerHTML = months[month] + " " + year;
+      hidePickDate({ calendarBody, month, year });
       selectYear.value = year;
       selectMonth.value = month;
       drawCalendar(firstDay, calendarBody, month, year);
@@ -188,7 +198,7 @@ function showAndHideCalendar() {
 }
 showAndHideCalendar();
 
-function Clear() {
+function clear() {
   const closeBtns = document.querySelectorAll('#close');
   closeBtns.forEach(closeBtn => {
     closeBtn.addEventListener('click', function (e) {
@@ -197,20 +207,30 @@ function Clear() {
   })
 }
 
+const findDay = (e) => {
+  const findDay = new Date();
+  findDay.setDate(e.currentTarget.getAttribute('data-date'));
+  findDay.setMonth(e.currentTarget.getAttribute('data-month') - 1);
+  findDay.setFullYear(e.currentTarget.getAttribute('data-year'));
+  return findDay;
+}
+
+const findInput = (e) => {
+  const findInput = e.currentTarget.parentNode.parentNode.parentNode.
+    parentNode.parentNode.parentNode.childNodes[1];
+  findInput.value = `${days[findDay(e).getDay()]}, ` +
+    `${e.currentTarget.getAttribute('data-date')} ` +
+    `${e.currentTarget.getAttribute('data-month_name')} ` +
+    `${e.currentTarget.getAttribute('data-year')} `;
+}
+
 function showDateInput() {
   const datePicked = document.querySelectorAll('.date-picker');
   datePicked.forEach(x => x.addEventListener('click', function (e) {
-    const findDay = new Date();
-    findDay.setDate(e.currentTarget.getAttribute('data-date'));
-    findDay.setMonth(e.currentTarget.getAttribute('data-month') - 1);
-    findDay.setFullYear(e.currentTarget.getAttribute('data-year'));
-    const dayName = days[findDay.getDay()];
-    const findInput = e.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[1];
-
-    findInput.value = `${dayName}, ${e.currentTarget.getAttribute('data-date')} ${e.currentTarget.getAttribute('data-month_name')} ${e.currentTarget.getAttribute('data-year')}`;
-
-    const findWrap = e.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode;
-    findWrap.style.display = "none";
+    findDay(e);
+    findInput(e);
+    e.currentTarget.parentNode.parentNode.parentNode.
+      parentNode.parentNode.style.display = "none";    
   }))
 }
 showDateInput();
@@ -230,15 +250,16 @@ const exampleArray = [
 
 function handleDisabled() {
   exampleArray.map(item => {
-    const timestampStart = item.start;
-    const dateStart = new Date(timestampStart * 1000);
-    const timestampEnd = item.end;
-    const dateEnd = new Date(timestampEnd * 1000);
+    const dateStart = new Date(item.start * 1000);
+    const dateEnd = new Date(item.end * 1000);
     const datePickers = document.querySelectorAll('.date-picker');
     datePickers.forEach(datePicker => {
-      if (datePicker.dataset.year >= dateStart.getFullYear() && datePicker.dataset.year <= dateEnd.getFullYear()) {
-        if (datePicker.dataset.month >= (dateStart.getMonth() + 1) && datePicker.dataset.month <= (dateEnd.getMonth() + 1)) {
-          if (datePicker.dataset.date >= dateStart.getDate() && datePicker.dataset.date <= dateEnd.getDate()) {
+      if (datePicker.dataset.year >= dateStart.getFullYear() && 
+      datePicker.dataset.year <= dateEnd.getFullYear()) {
+        if (datePicker.dataset.month >= (dateStart.getMonth() + 1) && 
+        datePicker.dataset.month <= (dateEnd.getMonth() + 1)) {
+          if (datePicker.dataset.date >= dateStart.getDate() && 
+          datePicker.dataset.date <= dateEnd.getDate()) {
             datePicker.setAttribute("disabled", "disabled");
             datePicker.style.backgroundColor = "gray";
             datePicker.style.cursor = "not-allowed";
